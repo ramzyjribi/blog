@@ -72,7 +72,7 @@ class ApiService {
 
   private constructor() {
     this.api = axios.create({
-      baseURL: '/api/v1',
+      baseURL: 'https://ramziblogapi.onrender.com/api/v1',
       headers: {
         'Content-Type': 'application/json'
       }
