@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import {
@@ -21,6 +21,7 @@ import {
   Share
 } from 'lucide-react';
 import { apiService, Post } from '../services/apiService';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface PostPageProps {
   isAuthenticated?: boolean;
@@ -37,6 +38,9 @@ const PostPage: React.FC<PostPageProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const summaryRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -95,11 +99,89 @@ const PostPage: React.FC<PostPageProps> = ({
   const createSanitizedHTML = (content: string) => {
     return {
       __html: DOMPurify.sanitize(content, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'br'],
+        ALLOWED_TAGS: ['p', 'strong', 'em', 'br','h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li'],
         ALLOWED_ATTR: []
       })
     };
   };
+
+  const keyGemini = "AIzaSyBDtIUznabAX_inOIqkN-7SLKfDBB6H08o"; 
+
+  useEffect(() => {
+    if (summary && summaryRef.current) {
+      setTimeout(() => {
+        summaryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [summary]);
+
+  const handleGenerateSummary = async () => {
+  if (!post) return;
+
+  try {
+    setLoadingSummary(true);
+
+    const prompt = `
+Tu es un assistant chargé de résumer un article de blog.
+Le texte fourni est en HTML.
+Renvoie un résumé clair, structuré et 100% en HTML utilisant uniquement:
+<h2>, <p>, <ul>, <li>, <strong>, <em>.
+
+Ne dépasse pas 200 mots.
+
+Texte original :
+${post.content}
+`;
+
+    const genAI = new GoogleGenerativeAI('AIzaSyBDtIUznabAX_inOIqkN-7SLKfDBB6H08o');
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    console.log("Generated Summary:", text);
+    setSummary(text);
+  } catch (error) {
+    setSummary("<p style='color:red'>Erreur lors de la génération du résumé.</p>");
+  } finally {
+    setLoadingSummary(false);
+  }
+};
+
+const handleGenerateSummary2 = async () => {
+  if (!post) return;
+  setLoadingSummary(true);
+
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyGemini}`;
+
+  const requestBody = {
+    contents: [{
+      parts: [{ text: `Résume cet article en HTML (h2, p, ul, li): ${post.content}` }]
+    }]
+  };
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+
+    const data = await response.json();
+    
+    if (data.error) {
+       throw new Error(data.error.message);
+    }
+
+    const text = data.candidates[0].content.parts[0].text;
+    setSummary(text.replace(/```html|```/g, "").trim());
+  } catch (error) {
+    console.error("Erreur détaillée:", error);
+    setSummary("<p style='color:red'>Erreur de connexion à l'API.</p>");
+  } finally {
+    setLoadingSummary(false);
+  }
+};
 
   if (loading) {
     return (
@@ -187,6 +269,15 @@ const PostPage: React.FC<PostPageProps> = ({
               >
                 Share
               </Button>
+              <Button
+                variant="flat"
+                color="secondary"
+                onClick={handleGenerateSummary}
+                isLoading={loadingSummary}
+                size="sm"
+            >
+                Generate AI Summary
+            </Button>
             </div>
           </div>
           <h1 className="text-3xl font-bold">{post.title}</h1>
@@ -220,22 +311,52 @@ const PostPage: React.FC<PostPageProps> = ({
 
         <CardFooter className="flex flex-col items-start gap-4">
           <Divider />
-          <div className="flex flex-wrap gap-2">
-            <Chip color="primary" variant="flat">
-              {post.category.name}
-            </Chip>
-            {post.tags.map((tag) => (
-              <Chip
-                key={tag.id}
-                variant="flat"
-                startContent={<Tag size={14} />}
-              >
-                {tag.name}
+          <div className="w-full flex items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              <Chip color="primary" variant="flat">
+                {post.category.name}
               </Chip>
-            ))}
-          </div>
+              {post.tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  variant="flat"
+                  startContent={<Tag size={14} />}
+                >
+                  {tag.name}
+                </Chip>
+              ))}
+            </div>
+            <Button
+                variant="flat"
+                color="secondary"
+                onClick={handleGenerateSummary}
+                isLoading={loadingSummary}
+                size="sm"
+            >
+                Generate AI Summary
+            </Button>
+          </div>  
         </CardFooter>
       </Card>
+      {summary && (
+  <div
+    ref={summaryRef}
+    className="mt-6 w-full animate-fade-slide"
+  >
+    <Card className="w-full border border-default-200">
+      <CardHeader>
+        <h2 className="text-xl font-semibold">AI Summary</h2>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <div 
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={createSanitizedHTML(summary)}
+        />
+      </CardBody>
+    </Card>
+  </div>
+)}
     </div>
   );
 };

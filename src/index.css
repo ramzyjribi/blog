@@ -1,0 +1,114 @@
+/* ======================================
+   Prose Fix pour contenu HTML dynamique
+   Compatible NextUI + Tailwind
+   ====================================== */
+
+/* TITRES */
+.prose h1 {
+  font-size: 2.25rem !important; /* text-3xl */
+  font-weight: 700 !important;
+  line-height: 2.5rem !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.75em !important;
+}
+
+.prose h2 {
+  font-size: 1.875rem !important; /* text-2xl */
+  font-weight: 600 !important;
+  line-height: 2.25rem !important;
+  margin-top: 1.25em !important;
+  margin-bottom: 0.625em !important;
+}
+
+.prose h3 {
+  font-size: 1.5rem !important; /* text-xl */
+  font-weight: 600 !important;
+  line-height: 2rem !important;
+  margin-top: 1em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.prose h4, 
+.prose h5, 
+.prose h6 {
+  font-weight: 600 !important;
+  margin-top: 0.75em !important;
+  margin-bottom: 0.375em !important;
+}
+
+/* PARAGRAPHES */
+.prose p {
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  line-height: 1.75 !important;
+}
+
+/* LISTES */
+.prose ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important; /* ml-6 */
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.prose ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.prose li {
+  margin-top: 0.25em !important;
+  margin-bottom: 0.25em !important;
+}
+
+/* LIENS */
+.prose a {
+  color: #3b82f6 !important; /* bleu Tailwind par défaut */
+  text-decoration: underline !important;
+}
+
+.prose a:hover {
+  text-decoration: none !important;
+}
+
+/* STRONG / EMPHASIS */
+.prose strong {
+  font-weight: 700 !important;
+}
+
+.prose em {
+  font-style: italic !important;
+}
+
+/* IMAGES */
+.prose img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* TABLES */
+.prose table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin-top: 1em !important;
+  margin-bottom: 1em !important;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid #d1d5db !important; /* gris Tailwind */
+  padding: 0.5em !important;
+  text-align: left !important;
+}
+
+/* BLOCKQUOTE */
+.prose blockquote {
+  border-left: 4px solid #d1d5db !important;
+  padding-left: 1em !important;
+  color: #6b7280 !important;
+  font-style: italic !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}

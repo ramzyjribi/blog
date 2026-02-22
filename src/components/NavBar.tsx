@@ -59,7 +59,7 @@ const NavBar: React.FC<NavBarProps> = ({
 
       <NavbarContent className="hidden sm:flex gap-4" justify="start">
         <NavbarBrand>
-          <Link to="/" className="font-bold text-inherit">Blog Platform</Link>
+          <Link to="/" className="font-bold text-inherit text-xl">Le Blog Tech de Ramzi Jribi</Link>
         </NavbarBrand>
         {menuItems.map((item) => (
           <NavbarItem
