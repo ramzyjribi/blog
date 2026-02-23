@@ -125,17 +125,17 @@ const PostList: React.FC<PostListProps> = ({
           <div className="space-y-4">
             {posts?.map((post, index) => (
               <Card key={post.id} className="w-full p-2" isPressable={true} onPress={() => navToPostPage(post)}>
-                <CardHeader className="flex gap-3">
+                <CardHeader className="flex flex-col sm:flex-row gap-3">
                   <img 
                     src={images[index % images.length]} 
                     alt={post.title}
-                    className="w-64 h-64 object-cover rounded"
+                    className="w-full sm:w-40 md:w-48 lg:w-64 h-auto sm:h-40 md:h-48 lg:h-64 object-cover rounded"
                   />
-                    <div className='flex flex-col'>
-                    <h2 className="text-xl font-bold text-left">
+                    <div className='flex flex-col w-full'>
+                    <h2 className="text-lg sm:text-xl font-bold text-left">
                       {post.title}
                     </h2>
-                    <p className="text-small text-default-500">
+                    <p className="text-xs sm:text-small text-default-500">
                       by {post.author?.name}
                     </p>                
                     </div>
