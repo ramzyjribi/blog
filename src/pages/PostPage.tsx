@@ -105,7 +105,9 @@ const PostPage: React.FC<PostPageProps> = ({
     };
   };
 
-  const keyGemini = "AIzaSyBDtIUznabAX_inOIqkN-7SLKfDBB6H08o"; 
+  const keyGem = import.meta.env.VITE_GEM_KEY;
+
+   
 
   useEffect(() => {
     if (summary && summaryRef.current) {
@@ -133,7 +135,7 @@ Texte original :
 ${post.content}
 `;
 
-    const genAI = new GoogleGenerativeAI('AIzaSyBDtIUznabAX_inOIqkN-7SLKfDBB6H08o');
+    const genAI = new GoogleGenerativeAI(keyGem);
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
@@ -152,7 +154,7 @@ const handleGenerateSummary2 = async () => {
   if (!post) return;
   setLoadingSummary(true);
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyGemini}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyGem}`;
 
   const requestBody = {
     contents: [{
