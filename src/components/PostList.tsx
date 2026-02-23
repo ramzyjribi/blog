@@ -4,6 +4,10 @@ import { Card, CardBody, CardFooter, CardHeader, Chip, Pagination, Select, Selec
 import { Post } from '../services/apiService';
 import { Calendar, Clock, Tag } from 'lucide-react';
 import DOMPurify from 'dompurify';
+import nextJsImage from '../assets/next_js.jpg';
+import llmImage from '../assets/llm.webp';
+import angularImage from '../assets/angular.webp';
+import whisperImage from '../assets/whisper.webp';
 
 interface PostListProps {
   posts: Post[] | null;
@@ -14,6 +18,8 @@ interface PostListProps {
   onPageChange: (page: number) => void;
   onSortChange: (sortBy: string) => void;
 }
+
+const images = [llmImage,whisperImage,angularImage, nextJsImage];
 
 const PostList: React.FC<PostListProps> = ({
   posts,
@@ -117,9 +123,14 @@ const PostList: React.FC<PostListProps> = ({
       ) : (
         <>
           <div className="space-y-4">
-            {posts?.map((post) => (
+            {posts?.map((post, index) => (
               <Card key={post.id} className="w-full p-2" isPressable={true} onPress={() => navToPostPage(post)}>
-                <CardHeader className="flex gap-3">                 
+                <CardHeader className="flex gap-3">
+                  <img 
+                    src={images[index % images.length]} 
+                    alt={post.title}
+                    className="w-64 h-64 object-cover rounded"
+                  />
                     <div className='flex flex-col'>
                     <h2 className="text-xl font-bold text-left">
                       {post.title}
